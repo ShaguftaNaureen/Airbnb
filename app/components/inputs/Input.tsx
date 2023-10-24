@@ -3,6 +3,7 @@
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { BiDollar } from "react-icons/bi";
 
+// new changes
 
 interface InputProps {
     id: string;
