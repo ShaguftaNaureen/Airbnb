@@ -25,6 +25,9 @@ const Button:React.FC<ButtonProps> = ({
     onClick={onClick}
     disabled={disabled}
     className={`
+    flex
+    justify-center
+    items-center
     realtive 
     disabled:opacity-70 
     disabled:cursor-not-allowed 
@@ -44,7 +47,7 @@ const Button:React.FC<ButtonProps> = ({
         (
             <Icon 
                 size={24}
-                className='relative left-4 top-3'
+                className='relative mr-5'
             />
         )
         }
