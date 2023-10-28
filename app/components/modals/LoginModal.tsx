@@ -6,55 +6,86 @@ import {FcGoogle} from "react-icons/fc"
 import { useCallback, useState } from "react"
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form"
 import useRegisterModal from "@/app/hooks/useRegisterModal"
+import useLoginModal from "@/app/hooks/useLoginModal"
 import Modal from "./Modal"
 import Heading from "../Heading"
 import Input from "../inputs/Input"
 import {toast} from "react-hot-toast"
 import Button from "../Button"
 import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
-const RegisterModal = () =>{
+
+const LoginModal = () =>{
     const registerModal = useRegisterModal();
+    const loginModal = useLoginModal()
+    const router = useRouter()
     const [loading, setLoading] = useState(false);
 
-    const {register, handleSubmit, formState:{errors,}} = useForm<FieldValues>(
+    const {register, handleSubmit, formState:{errors}} = useForm<FieldValues>(
     {defaultValues:{
         email:"",
         password: "",
-        name: ""
     }})
 
-    const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        setLoading(true)
-        axios.post('/api/register', data)
-            .then(()=>{
-                registerModal.onClose()
-            })
-            .catch((error)=>{
-                toast.error("Something went wrong.")
-            })
-            .finally(()=>{
-                setLoading(false)
-            })
-    }
+    // const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    //     console.log("dataconsole", data)
+    //     setLoading(true)
+        
+    //     signIn('credentials', {
+    //         ...data,
+    //         redirect: false,
+    //     })
+    //     .then((callback)=>{
+    //         console.log("callbacktest", callback?.ok, callback?.error, callback?.status)
+    //         setLoading(false)
+
+    //         if(callback?.ok){
+    //             toast.success('Logged in')
+    //             router.refresh()
+    //             loginModal.onClose()
+    //         }
+    //         if(callback?.error){
+    //             toast.error(callback.error)
+    //         }
+    //     })
+    // }
+
+    const onSubmit:  SubmitHandler<FieldValues> = async (data) => {
+        setLoading(true);
+      
+        try {
+          const result = await signIn('credentials', {
+            email: data.email,
+            password: data.password,
+            // redirect: false, // Do not automatically redirect
+          });
+          if (result?.error) {
+            // Handle login error
+            toast.error(result.error);
+          } else {
+            // Login was successful
+            toast.success('Logged in');
+            router.refresh(); 
+            loginModal.onClose(); // Close the login modal
+          }
+        } catch (error) {
+          // Handle unexpected errors
+          console.error('Error:', error);
+        } finally {
+          setLoading(false);
+        }
+      };  
 
     const bodyContent = (
         <div className="flex flex-col gap-4">
             <Heading 
-                title="Welcome to Airbnb"
-                subtitle="Create an account!"
+                title="Welcome back"
+                subtitle="Login to your account!"
             />
             <Input 
                 id="email"
                 label="Email"
-                disabled={loading}
-                register={register}
-                errors={errors}
-                required
-            />
-            <Input 
-                id="name"
-                label="Name"
                 disabled={loading}
                 register={register}
                 errors={errors}
@@ -85,7 +116,7 @@ const RegisterModal = () =>{
                 outline
                 label= "Continue with Github"
                 icon={AiFillGithub}
-                onClick={() =>signIn('github')}
+                onClick={() => signIn('github')}
             />
             <div className='text-neutral-500 text-center mt-4 font-light flex flex-row justify-center'>
                 <div className="items-center gap-2">
@@ -103,10 +134,10 @@ const RegisterModal = () =>{
     return(
         <Modal
             disabled={loading}
-            isOpen={registerModal.isOpen}
-            title= "Register"
+            isOpen={loginModal.isOpen}
+            title= "Login"
             actionLabel="Continue"
-            onClose={registerModal.onClose}
+            onClose={loginModal.onClose}
             onSubmit={handleSubmit(onSubmit)}
             body={bodyContent}
             footer={footerContent}
@@ -114,4 +145,4 @@ const RegisterModal = () =>{
     )
 }
 
-export default RegisterModal
+export default LoginModal
