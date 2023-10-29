@@ -12,9 +12,11 @@ import Input from "../inputs/Input"
 import {toast} from "react-hot-toast"
 import Button from "../Button"
 import { signIn } from "next-auth/react"
+import useLoginModal from "@/app/hooks/useLoginModal"
 
 const RegisterModal = () =>{
     const registerModal = useRegisterModal();
+    const loginModal = useLoginModal()
     const [loading, setLoading] = useState(false);
 
     const {register, handleSubmit, formState:{errors,}} = useForm<FieldValues>(
@@ -23,6 +25,11 @@ const RegisterModal = () =>{
         password: "",
         name: ""
     }})
+
+    const toggle = useCallback(()=>{
+        registerModal.onClose();
+        loginModal.onOpen();
+    },[loginModal, registerModal])
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setLoading(true)
@@ -92,7 +99,7 @@ const RegisterModal = () =>{
                     Already have an account?
                 </div>
                 <div 
-                onClick={registerModal.onClose}
+                onClick={toggle}
                 className="text-neutral-800 cursor-point hover:underline pl-2">
                     Log in
                 </div>
