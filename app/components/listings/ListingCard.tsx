@@ -83,7 +83,7 @@ const ListingCard:React.FC<ListingCardProps> = ({
                     />
                 </div>
             </div>
-            <div className='font-semibold text-lg'>
+            <div className='font-semibold text-sm'>
                 {location?.region}, {location?.label}
                 <div className='font-light text-neutral-500'>
                     {reservationDate || data.category}
