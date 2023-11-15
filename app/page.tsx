@@ -17,6 +17,7 @@ const Home = async ({searchParams}: HomeProps) => {
       <EmptyState showReset/>
     )
   }
+
   return (
   //  <ClientOnly>
     <Container>

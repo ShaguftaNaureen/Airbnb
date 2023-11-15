@@ -4,19 +4,19 @@ export interface IListingsParams{
     userId?: string
     guestCount?: number;
     roomCount?: number;
-    bathRoomCount?: number;
+    bathroomCount?: number;
     startDate?: string;
     endDate?: string;
-    locationValue?: string;
+    locationvalue?: string;
     category?: string
 }
 
 export default async function getListings(params: IListingsParams) {
     try{
-        const {userId, roomCount, guestCount, bathRoomCount, locationValue, startDate, endDate, category} = params;
+        const {userId, roomCount, guestCount, bathroomCount, locationvalue, startDate, endDate, category} = params;
         let query: any = {}
 
-        console.log("locationValue", locationValue)
+        console.log("locationvalue", params)
         if(userId){
             query.userId = userId
         }
@@ -37,14 +37,14 @@ export default async function getListings(params: IListingsParams) {
             }
         }
 
-        if(bathRoomCount){
-            query.bathRoomCount = {
-                gte: +bathRoomCount
+        if(bathroomCount){
+            query.bathroomCount = {
+                gte: +bathroomCount
             }
         }
 
-        if(locationValue){
-            query.locationValue = locationValue
+        if(locationvalue){
+            query.locationValue = locationvalue
         }
 
         if(startDate && endDate){
